@@ -115,14 +115,14 @@ app.put('/todos/:id', function(req, res) {
     res.status(500).send();
   });
 });
-
+ 
 // POST/users
 app.post('/users',function(req,res){
   var body=_.pick(req.body,'email','password');
   db.user.create(body).then(function(user){
    if(user)
    {
-    res.json(user);
+    res.json(user.toPublicJSON());
    }
   },function(err){
   res.status(400).json(err);
