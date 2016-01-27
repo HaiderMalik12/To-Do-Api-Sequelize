@@ -1,5 +1,6 @@
 var express=require('express');
 var app=express();
+var bcrypt = require('bcryptjs');
 var bodyParser=require('body-parser');
 var PORT=process.env.PORT || 3000;
 var db=require('./db.js');
@@ -127,9 +128,45 @@ app.post('/users',function(req,res){
   },function(err){
   res.status(400).json(err);
   });
+ 
+
+});
+
+//POST /users/login
+//coz we need a data from the browswe or client or postman
+app.post('/users/login',function(req,res){
+ 
+  var body=_.pick(req.body,'email','password');
+  //custom method
+  db.user.authenticate(body).then(function(user){
+  res.json(user.toPublicJSON());
+  },function(e){
+   res.status(401).send();
+  });
+  // if(typeof body.email !=='string' || typeof body.password !=='string'){
+  //   return res.status(400).send();
+  // }
+  
+  // db.user.findOne({
+  //   where:{
+  //     email:body.email
+  //   }
+  // }).then(function(user){
+  //  if(!user || !bcrypt.compareSync(body.password,user.get('password_hash'))){
+  //    return res.status(404).send();
+  //  }
+   
+  // // else{
+  //  res.json(user.toPublicJSON());
+
+ 
+  // },function(err){
+  // res.status(500).send();
+  // });
 
 
 });
+
 db.sequelize.sync().then(function(){
 app.listen(PORT,function(){
  
